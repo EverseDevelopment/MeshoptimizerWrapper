@@ -1,0 +1,1 @@
+add_subdirectory (${LIBRARY_BRIDGE_CLI_NAME})
