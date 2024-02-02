@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MeshOptimization_glTFPack</id>
+    <version>1.0.0</version>
+    <title>MeshOptimization_glTFPack</title>
+    <authors>e-verse</authors>
+    <owners>e-verse</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <readme>README.md</readme>
+    <icon>EverseLogo.png</icon>
+    <projectUrl>https://github.com/EverseDevelopment/MeshoptimizerWrapper</projectUrl>
+    <description>Library using MeshOptimization Compression to compress GLTF and GLB files</description>
+    <releaseNotes>Latest Release</releaseNotes>
+    <copyright>Copyright ©  2024</copyright>
+    <tags>MeshOptimization e-verse</tags>
+  </metadata>
+  <files>
+    <file src="..\build\Release\MeshOpt.dll" target="lib\net471\MeshOpt.dll" />
+    <file src="EverseLogo.png" target="EverseLogo.png" />
+    <file src="README.md" target="README.md" />
+  </files>
+</package>

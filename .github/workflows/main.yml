@@ -11,14 +11,55 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up CMake
       uses: lukka/get-cmake@v3.21.1
+
     - name: Create Build Directory
       run: mkdir build
       shell: cmd
+
     - name: Change to Build Directory and Build
       run: |
         cd build
         cmake -G "Visual Studio 17 2022" -A x64 ..
         cmake --build . --config Release
       shell: cmd
+    
+    # Get PFX Certificate
+    - name: Get certificate
+      run: |
+        $url = "${{ secrets.EVERSE_CERTIFICATE_S3_URL }}"
+        $outputFilePath = "credentials.pfx"
+        $apiKey = "${{ secrets.EVERSE_AWS_S3_CERTIFICATE_KEY_ID }}"
+        
+        $headers = @{
+            "x-api-key" = $apiKey
+        }
+
+        Invoke-RestMethod -Uri $url -Headers $headers -OutFile $outputFilePath
+
+    # Install Nuget
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.6
+
+    # Sign Dll
+    - name: Sign dlls
+      run: |
+        $dlls = dir -Path .\ -Filter "MeshOpt.dll" -Recurse | %{$_.FullName}
+        foreach ($dll in $dlls)
+        {
+          "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f "credentials.pfx" /p ${{ secrets.EVERSE_CERTIFICATE_KEY }} /t http://timestamp.digicert.com "$dll"
+          Write-Host $dll
+        }
+
+     # Create Nuget Package
+    - name: Create NuGet package
+      run: |
+        nuget pack Nuget/MeshOpt.glTFPack.nuspec -Properties Configuration=Release
+
+    # Upload Nuget Package
+    - name: Push NuGet package
+      run: |
+        nuget push *.nupkg -Source "https://api.nuget.org/v3/index.json" -ApiKey ${{secrets.NUGET_TOKEN_EVERSE}} -SkipDuplicate
+        dotnet nuget add source https://nuget.pkg.github.com/eversedevelopment/index.json --name github --username pderendinger-everse --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text
