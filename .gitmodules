@@ -1,0 +1,6 @@
+[submodule "ThirdParty/meshoptimizer"]
+	path = ThirdParty/meshoptimizer
+	url = https://github.com/zeux/meshoptimizer.git
+[submodule "ThirdParty/cmake-general-library"]
+	path = ThirdParty/cmake-general-library
+	url = https://github.com/barnoy1/cmake-general-library.git
