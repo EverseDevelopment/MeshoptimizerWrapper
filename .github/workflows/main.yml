@@ -8,15 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up CMake
       uses: lukka/get-cmake@v3.21.1
     - name: Create Build Directory
       run: mkdir build
+      shell: cmd
     - name: Change to Build Directory and Build
       run: |
         cd build
-        cmake ..
+        cmake -G "Visual Studio 16 2019" -A x64 ..
         cmake --build . --config Release
+      shell: cmd
