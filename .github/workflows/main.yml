@@ -49,15 +49,10 @@ jobs:
         $dlls = dir -Path .\ -Filter "MeshOpt.dll" -Recurse | %{$_.FullName}
         foreach ($dll in $dlls)
         {
-          $signtool = "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"
-          if (Test-Path $signtool) {
-            Write-Error "Foundound"
-          } else {
-            Write-Error "Signtool not found"
-          }
-          "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f "credentials.pfx" /p ${{ secrets.EVERSE_CERTIFICATE_KEY }} /t http://timestamp.digicert.com "$dll"
-          Write-Host $dll
+          $signtool = "C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
+          & $signtool sign /f "credentials.pfx" /p ${{ secrets.EVERSE_CERTIFICATE_KEY }} /t http://timestamp.digicert.com "$dll"
         }
+      shell: powershell
 
      # Create Nuget Package
     - name: Create NuGet package
