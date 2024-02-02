@@ -5,7 +5,7 @@
 </p>
 
 # Nuget Package
-[Nuget Package](https://www.nuget.org/packages/MeshOptimization_glTFPack)
+[Nuget Package](https://www.nuget.org/packages/MeshOptimizer_glTFPack/)
 
 # About
 This a wrapper project to use [Mesh Optimizer Compression](https://github.com/zeux/meshoptimizer) algorithm with C#
