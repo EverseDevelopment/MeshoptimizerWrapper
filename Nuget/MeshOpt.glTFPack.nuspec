@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>MeshOptimizer_glTFPack</id>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
     <title>MeshOptimizer_glTFPack</title>
     <authors>e-verse</authors>
     <owners>e-verse</owners>
@@ -15,9 +15,12 @@
     <releaseNotes>Latest Release</releaseNotes>
     <copyright>Copyright ©  2024</copyright>
     <tags>MeshOptimizer e-verse</tags>
+	<dependencies>
+      <group targetFramework=".NETCoreApp8.0" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\build\Release\MeshOpt.dll" target="lib\net471\MeshOpt.dll" />
+    <file src="..\x64\Release\MeshOpt.dll" target="lib\netcoreapp8.0\MeshOpt.dll" />
     <file src="EverseLogo.png" target="EverseLogo.png" />
     <file src="README.md" target="README.md" />
   </files>

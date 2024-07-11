@@ -1,1 +1,0 @@
-add_subdirectory (${LIBRARY_CSHARP_NAME})

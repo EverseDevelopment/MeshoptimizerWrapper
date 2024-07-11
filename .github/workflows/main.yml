@@ -7,25 +7,27 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build_and_run:
     runs-on: windows-latest
+    env:
+      SOLNAME: SOLUTIONNAME
+      SOLSLN: SOLUTIONNAME.sln
+      SOLDLL: SOLUTIONNAME.dll
+    outputs:
+      Version: ${{ steps.gitversion.outputs.nuGetVersionV2 }} 
+      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}   
+
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up CMake
-      uses: lukka/get-cmake@v3.21.1
+    # Set up MSBuild
+    - name: Set up MSBuild path
+      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Create Build Directory
-      run: mkdir build
-      shell: cmd
+    # Build C++ project
+    - name: Build C++ project
+      run: msbuild MeshoptimizerWrapper.sln -property:Configuration=Release -property:Platform="x64" -target:MeshOpt
 
-    - name: Change to Build Directory and Build
-      run: |
-        cd build
-        cmake -G "Visual Studio 17 2022" -A x64 ..
-        cmake --build . --config Release
-      shell: cmd
-    
     # Get PFX Certificate
     - name: Get certificate
       run: |
@@ -38,21 +40,23 @@ jobs:
         }
 
         Invoke-RestMethod -Uri $url -Headers $headers -OutFile $outputFilePath
-
-    # Install Nuget
+    
+    # Install and restore the necessary NuGet packages
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.6
+     
+    - name: Restore NuGet Packages
+      run: nuget restore "MeshoptimizerWrapper.sln"
 
     # Sign Dll
     - name: Sign dlls
       run: |
-        $dlls = dir -Path .\ -Filter "MeshOpt.dll" -Recurse | %{$_.FullName}
+        $dlls = dir -Path .\ -Filter "MeshOpt.dll.dll" -Recurse | %{$_.FullName}
         foreach ($dll in $dlls)
         {
-          $signtool = "C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
-          & $signtool sign /f "credentials.pfx" /p ${{ secrets.EVERSE_CERTIFICATE_KEY }} /t http://timestamp.digicert.com "$dll"
+          packages\signtool.10.0.17763.132\tools\signtool.exe sign /f "credentials.pfx" /p ${{ secrets.EVERSE_CERTIFICATE_KEY }} /t http://timestamp.digicert.com "$dll"
+          Write-Host $dll
         }
-      shell: powershell
 
      # Create Nuget Package
     - name: Create NuGet package
